@@ -164,20 +164,18 @@ describe Facter::Util::Cache::PersistentHash do
     it "should be able to overwrite existing values" do
       new_value = {
         "data"=>"new_data",
-        "ttl"=>0,
+        "ttl"=>100,
         "stored"=>1322429665,
         "key"=>"macaddress",
       }
 
       cache.set("macaddress", new_value)
       File.open(cache.cache_file("macaddress"), "r") do |f|
-        f.read.should == <<-EOS
---- 
-ttl: 0
-data: new_data
-stored: 1322429665
-key: macaddress
-        EOS
+        data = YAML::load(f.read)
+        data["data"].should == "new_data"
+        data["ttl"].should == 100
+        data["stored"].should == 1322429665
+        data["key"].should == "macaddress"
       end
       cache.get("macaddress").should == new_value
     end
