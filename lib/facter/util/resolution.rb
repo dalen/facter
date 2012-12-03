@@ -31,8 +31,7 @@ class Facter::Util::Resolution
   # Return #Cache time to live for this fact in seconds. The default value is
   # 0 seconds.
   def ttl
-    return @ttl if @ttl
-    return DEFAULT_TTL
+    return @ttl || DEFAULT_TTL
   end
 
   def ttl=(newttl)
@@ -190,7 +189,7 @@ class Facter::Util::Resolution
             result = Facter::Util::Resolution.exec(@code)
           end
           # Lets update the cache with our resolved value
-          cache.set(name.to_s, result, ttl)
+          cache.set(name.to_s, result, ttl) if ttl
         end
       rescue Timeout::Error => detail
         warn "Timed out seeking value for %s" % self.name

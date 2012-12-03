@@ -52,6 +52,9 @@ class Facter::Util::Cache
     # Do nothing if cache disabled
     return unless Facter.cache_enabled?
 
+    # Do nothing if ttl is 0
+    return if ttl == 0
+
     # Prepare data to write
     data = {
       "data" => value,
